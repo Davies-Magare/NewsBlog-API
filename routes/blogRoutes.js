@@ -6,20 +6,23 @@ const {
   getPostById,
   addCommentToPost,
   getCommentsForPost,
+  getCommentById
 } = require('../controllers/blogController');
-const { protect } = require('../middleware/authMiddleware'); // Middleware for protected routes
+const { protect } = require('../middleware/authMiddleware'); 
 
 const router = express.Router();
 
 // Post routes
-router.post('/post', protect, registerPost); // Create a new post
-router.put('/post', protect, updatePost); // Update an existing post
-router.get('/posts', getAllPosts); // Get all posts with pagination
-router.get('/post/:id', getPostById); // Get a specific post by ID
+router.post('/post', protect, registerPost);
+router.put('/post', protect, updatePost); 
+router.get('/posts', getAllPosts); 
+router.get('/post/:id', getPostById); 
 
-// Comment routes
-router.post('/post/:id/comment', protect, addCommentToPost); // Add a comment to a post
-router.get('/post/:id/comments', getCommentsForPost); // Get all comments for a post
+router.post('/post/:id/comment', protect, addCommentToPost); 
+router.get('/post/:id/comments', getCommentsForPost);
+
+//Comment routes
+router.get('/comment/:id', getCommentById);
 
 module.exports = router;
 
