@@ -85,7 +85,7 @@ exports.getPostById = async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    return res.status(200).json({ success: true, post });
+    return res.status(200).json({ post });
   } catch (error) {
     console.error("Error fetching post by ID:", error);
     return res.status(500).json({ error: "Server error while fetching post" });
@@ -108,7 +108,7 @@ exports.addCommentToPost = async (req, res) => {
     post.comments.push(comment._id);
     await post.save();
 
-    return res.status(201).json({ success: true, comment });
+    return res.status(201).json({ success: "Comment posted", comment });
   } catch (error) {
     console.error("Error adding comment to post:", error);
     return res.status(500).json({ error: "Server error while adding comment" });
@@ -131,3 +131,16 @@ exports.getCommentsForPost = async (req, res) => {
   }
 };
 
+
+exports.getCommentById = async (req, res) => {
+  try{
+    const { id } = req.params;
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      return res.status(404).json({error: "Comment not found" });
+    }
+    return res.status(200).json({comment});
+  }catch(error){
+    return res.status(500).json({error: "Server error while fetching comment"});
+  }
+}
