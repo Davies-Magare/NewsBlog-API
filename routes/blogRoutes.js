@@ -7,8 +7,13 @@ const {
   addCommentToPost,
   getCommentsForPost,
   getCommentById,
-  followUser
+  followUser,
+  getUserPosts,
+  getUserPostsById,
+  getUserProfileById,
 } = require('../controllers/blogController');
+
+const { getUserProfile } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware'); 
 
 const router = express.Router();
@@ -25,7 +30,11 @@ router.get('/post/:id/comments', getCommentsForPost);
 //Comment routes
 router.get('/comment/:id', getCommentById);
 router.post('/users/:id/follow', protect, followUser);
-
-
+//Logged in User routes
+router.get('/me/profile', protect, getUserProfile);
+router.get('/me/posts', protect, getUserPosts);
+//Routes for any User
+router.get('/user/:id/posts', getUserPostsById);
+router.get('/user/:id/profile', getUserProfileById);
 module.exports = router;
 

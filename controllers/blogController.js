@@ -1,6 +1,7 @@
 const Post = require('../models/Post'); // Import Post model
 const Comment = require('../models/Comment');
 const Follow = require('../models/Follows');
+const User = require('../models/User');
 // Register new Post
 exports.registerPost = async (req, res) => {
   try {
@@ -158,22 +159,17 @@ exports.getCommentById = async (req, res) => {
 }
 
 exports.followUser = async (req, res) => {
-  const userId = req.params.id; // ID of the user to follow (from the URL)
-  const followerId = req.user._id; // ID of the authenticated user
+  const userId = req.params.id; 
+  const followerId = req.user._id;
 
   try {
-    // Prevent following oneself
     if (userId === followerId.toString()) {
       return res.status(400).json({ error: "You cannot follow yourself" });
     }
-
-    // Check if the relationship already exists
     const existingFollow = await Follow.findOne({ follower: followerId, following: userId });
     if (existingFollow) {
       return res.status(400).json({ error: "You are already following this user" });
     }
-
-    // Create the follow relationship
     const follow = await Follow.create({ follower: followerId, following: userId });
     return res.status(201).json({ message: "User followed successfully", data: follow });
   } catch (error) {
@@ -182,4 +178,79 @@ exports.followUser = async (req, res) => {
   }
 };
 
+
+exports.getUserPosts = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const posts = await Post.find({ author: userId })
+      .populate('author', 'username')
+      .populate({
+        path: 'comments',
+        select: 'content author',
+        populate: { path: 'author', select: 'username' },
+      });
+
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({ message: "No posts found for this user." });
+    }
+    res.status(200).json({
+      success: true,
+      posts: posts
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Server error while fetching posts." });
+  }
+};
+
+exports.getUserPostsById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const posts = await Post.find({ author: userId })
+      .populate('author', 'username')
+      .populate({
+        path: 'comments',
+        select: 'content author',
+        populate: { path: 'author', select: 'username' },
+      });
+
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({ message: "No posts found for this user." });
+    }
+    res.status(200).json({
+      success: true,
+      posts: posts
+    });
+  } catch (error) {
+    console.error("Error fetching user's posts:", error);
+    res.status(500).json({ error: "Server error while fetching posts." });
+  }
+};
+
+exports.getUserProfileById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId)
+      .select('-password -token')
+      .populate('followers', 'username')
+      .populate('following', 'username');
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(200).json({
+      success: true,
+      profile: {
+        id: user._id,
+	username: user.username,
+	email: user.email,
+	followers: user.followers,
+	following: user.following
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ error: "Server error while fetching profile." });
+  }
+};
 
