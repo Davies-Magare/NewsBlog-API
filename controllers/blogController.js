@@ -1,9 +1,10 @@
 const Post = require('../models/Post'); // Import Post model
 const Comment = require('../models/Comment');
+const Follow = require('../models/Follows');
 // Register new Post
 exports.registerPost = async (req, res) => {
   try {
-    const { title, content, author } = req.body;
+    const { title, content, author, tags = [] } = req.body;
     if (!title) {
       return res.status(400).json({ error: "Title required" });
     }
@@ -16,7 +17,7 @@ exports.registerPost = async (req, res) => {
     if (!req.user || req.user._id.toString() !== author.toString()) {
       return res.status(403).json({ error: "You are not authorized to create this post" });
     }
-    const post = new Post({ title, content, author });
+    const post = new Post({ title, content, author, tags });
     await post.save();
 
     return res.status(201).json({ success: "New post created", post });
@@ -107,8 +108,11 @@ exports.addCommentToPost = async (req, res) => {
 
     post.comments.push(comment._id);
     await post.save();
+    const populatedComment = await Comment.findById(comment._id)
+    .populate('author', 'username')
+    .populate('post', 'title content');
 
-    return res.status(201).json({ success: "Comment posted", comment });
+    return res.status(201).json({ success: "Comment posted", comment: populatedComment });
   } catch (error) {
     console.error("Error adding comment to post:", error);
     return res.status(500).json({ error: "Server error while adding comment" });
@@ -119,7 +123,13 @@ exports.getCommentsForPost = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const post = await Post.findById(id).populate('comments');
+    const post = await Post.findById(id).populate({
+      path: 'comments',
+      populate: {
+        path: 'author',
+	select: 'username'
+      }
+    });
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
@@ -135,7 +145,9 @@ exports.getCommentsForPost = async (req, res) => {
 exports.getCommentById = async (req, res) => {
   try{
     const { id } = req.params;
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(id)
+    .populate('author', 'username')
+    .populate('post', 'title content');
     if (!comment) {
       return res.status(404).json({error: "Comment not found" });
     }
@@ -144,3 +156,30 @@ exports.getCommentById = async (req, res) => {
     return res.status(500).json({error: "Server error while fetching comment"});
   }
 }
+
+exports.followUser = async (req, res) => {
+  const userId = req.params.id; // ID of the user to follow (from the URL)
+  const followerId = req.user._id; // ID of the authenticated user
+
+  try {
+    // Prevent following oneself
+    if (userId === followerId.toString()) {
+      return res.status(400).json({ error: "You cannot follow yourself" });
+    }
+
+    // Check if the relationship already exists
+    const existingFollow = await Follow.findOne({ follower: followerId, following: userId });
+    if (existingFollow) {
+      return res.status(400).json({ error: "You are already following this user" });
+    }
+
+    // Create the follow relationship
+    const follow = await Follow.create({ follower: followerId, following: userId });
+    return res.status(201).json({ message: "User followed successfully", data: follow });
+  } catch (error) {
+    console.error("Follow error:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+

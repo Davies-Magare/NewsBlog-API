@@ -19,6 +19,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    token: {
+      type: String, // JWT token for managing user sessions
+      default: "",  // Initially set to an empty string
+    },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Reference to the User model
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Reference to the User model
+      },
+    ],
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt
@@ -26,7 +42,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash the password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
   try {
@@ -39,7 +55,7 @@ userSchema.pre('save', async function(next) {
 });
 
 // Method to compare password
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

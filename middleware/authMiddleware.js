@@ -1,4 +1,3 @@
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -13,21 +12,23 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized, no token provided.' });
     }
 
-    // Check if the JWT file exists
-    const filePath = 'jwt.txt'; // Adjust if you're storing unique files for each user
-    if (!fs.existsSync(filePath)) {
-      return res.status(401).json({ message: 'Logged out. Please log in again.' });
+    // Verify the token and decode the user ID
+    const decoded = jwt.verify(token, 'secretKey'); // Use your secret key here
+
+    // Check if the token is still valid by comparing with what's in the database
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: 'User not found.' });
     }
 
-    // Verify the token
-    const decoded = jwt.verify(token, 'secretKey');
-    req.user = await User.findById(decoded.id).select('-password');
-
-    if (!req.user) {
-      return res.status(401).json({ message: 'Not authorized, user not found.' });
+    // Validate that the token stored in the user matches the provided token
+    if (user.token !== token) {
+      return res.status(401).json({ message: 'Invalid or expired token.' });
     }
 
-    next();
+    // Attach user object to request for access in other routes
+    req.user = user;
+    next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error('Token validation error:', error);
     return res.status(401).json({ message: 'Not authorized, token failed.' });

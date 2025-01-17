@@ -6,7 +6,8 @@ const {
   getPostById,
   addCommentToPost,
   getCommentsForPost,
-  getCommentById
+  getCommentById,
+  followUser
 } = require('../controllers/blogController');
 const { protect } = require('../middleware/authMiddleware'); 
 
@@ -23,6 +24,8 @@ router.get('/post/:id/comments', getCommentsForPost);
 
 //Comment routes
 router.get('/comment/:id', getCommentById);
+router.post('/users/:id/follow', protect, followUser);
+
 
 module.exports = router;
 

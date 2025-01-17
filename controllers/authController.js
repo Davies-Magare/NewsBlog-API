@@ -17,33 +17,11 @@ exports.registerUser = async (req, res) => {
 
     return res.status(201).json({ message: 'User registered successfully.' });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Server error. Please try again.' });
   }
 };
 
-// Login user
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials.' });
-    }
-
-    const isPasswordValid = await user.matchPassword(password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid credentials.' });
-    }
-
-    // Create token
-    const token = jwt.sign({ id: user._id }, 'secretKey', { expiresIn: '1h' });
-    const filePath = ('jwt.txt');
-    fs.writeFileSync(filePath, token, 'utf8');
-    res.status(200).json({ message: 'Login successful', token });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error. Please try again.' });
-  }
-};
 
 // Get user profile
 exports.getUserProfile = async (req, res) => {
@@ -61,22 +39,44 @@ exports.getUserProfile = async (req, res) => {
     }
     res.status(200).json(userResponse);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Server error. Please try again.' });
   }
 };
 
-exports.logoutUser = async (req, res) => {
-  const filePath = 'jwt.txt';
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-  try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      return res.status(200).json({ message: 'Logged out successfully.' });
-    } else {
-      return res.status(400).json({ message: 'Already logged out or file not found.' });
-    }
-  } catch (error) {
-    console.error('Error during logout:', error);
-    return res.status(500).json({ message: 'Server error during logout.' });
+  const user = await User.findOne({ email });
+  if (user && (await user.matchPassword(password))) {
+    // Generate token
+    const token = jwt.sign({ id: user._id }, 'secretKey', { expiresIn: '1h' });
+
+    // Store the token in the user document
+    user.token = token;
+    await user.save();
+
+    res.status(200).json({ message: 'Login successful', token });
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
   }
 };
+
+exports.logoutUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (user) {
+      user.token = '';
+      await user.save();
+      res.status(200).json({ message: 'Logged out successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Server error during logout' });
+  }
+};
+
+
