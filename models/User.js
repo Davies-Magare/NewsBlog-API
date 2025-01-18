@@ -20,24 +20,28 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     token: {
-      type: String, // JWT token for managing user sessions
-      default: "",  // Initially set to an empty string
+      type: String,
     },
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Reference to the User model
+        ref: 'User',
       },
     ],
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Reference to the User model
+        ref: 'User',
       },
     ],
+    role: {
+      type: String,
+      enum: ['user', 'admin'], 
+      default: 'user',
+    },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 

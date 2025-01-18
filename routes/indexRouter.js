@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 });
 
 // Health check route
-router.get('/health', (req, res) => {
+router.get('/status', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running smoothly' });
 });
 

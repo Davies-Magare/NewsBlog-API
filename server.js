@@ -14,11 +14,12 @@ mongoose.connect('mongodb://localhost:27017/blog')
 const indexRouter = require('./routes/indexRouter');
 const authRouter = require('./routes/authRoutes');
 const blogRouter = require('./routes/blogRoutes');
+const adminRouter = require('./routes/adminRoutes');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/blog', blogRouter);
-
+app.use('/admin', adminRouter);
 app.use((req, res) => {
   res.status(404).send('Not Found');
 });

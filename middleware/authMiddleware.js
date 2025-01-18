@@ -5,35 +5,35 @@ const protect = async (req, res, next) => {
   let token;
 
   try {
-    // Extract token from Authorization header
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     } else {
-      return res.status(401).json({ message: 'Not authorized, no token provided.' });
+      return res.status(401).json({ message: 'You must provide a token.' });
     }
-
-    // Verify the token and decode the user ID
-    const decoded = jwt.verify(token, 'secretKey'); // Use your secret key here
-
-    // Check if the token is still valid by comparing with what's in the database
+    const decoded = jwt.verify(token, 'secretKey');
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ message: 'User not found.' });
     }
-
-    // Validate that the token stored in the user matches the provided token
     if (user.token !== token) {
       return res.status(401).json({ message: 'Invalid or expired token.' });
     }
-
-    // Attach user object to request for access in other routes
     req.user = user;
-    next(); // Proceed to the next middleware or route handler
+    next();
   } catch (error) {
     console.error('Token validation error:', error);
     return res.status(401).json({ message: 'Not authorized, token failed.' });
   }
 };
 
-module.exports = { protect };
+const adminProtect = (req, res, next) => {
+  console.log(req.user.role);
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    return res.status(403).json({ message: 'Access denied. Admins only.' });
+  }
+};
+
+module.exports = { adminProtect, protect };
 

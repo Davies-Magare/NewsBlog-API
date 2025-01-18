@@ -1,18 +1,18 @@
-const User = require('../models/User');  // Import the User model
+const User = require('../models/User'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 // Register new user
 exports.registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, role } = req.body;
   try {
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists.' });
     }
 
-    const newUser = new User({ username, email, password });
+    const newUser = new User({ username, email, password, role });
     await newUser.save();
 
     return res.status(201).json({ message: 'User registered successfully.' });
@@ -49,10 +49,7 @@ exports.loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
-    // Generate token
     const token = jwt.sign({ id: user._id }, 'secretKey', { expiresIn: '1h' });
-
-    // Store the token in the user document
     user.token = token;
     await user.save();
 
