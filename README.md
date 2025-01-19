@@ -96,8 +96,8 @@ The following routes are protected by JWT:
 #### Admin Routes
 ```http
 GET /admin/users
-DELETE /admin/users/:id
-DELETE /admin/posts/:id
+DELETE /admin/users/{user_id}
+DELETE /admin/posts/{post_id}
 ```
 
 #### Auth Routes
@@ -113,21 +113,15 @@ GET /auth/profile
 POST /blog/post
 PUT /blog/post
 GET /blog/posts
-GET /blog/post/:id
-POST /blog/post/:id/comment
-GET /blog/post/:id/comments
-GET /blog/comment/:id
-POST /blog/users/:id/follow
+GET /blog/post/{post_id}
+POST /blog/post/{post_id}/comment
+GET /blog/post/{post_id}/comments
+GET /blog/comment/{comment_id}
+POST /blog/users/{user_id}/follow
 GET /blog/me/profile
 GET /blog/me/posts
-GET /blog/user/:id/posts
-GET /blog/user/:id/profile
-```
-
-#### Miscellaneous Routes
-```http
-GET /
-GET /status
+GET /blog/user/{user_id}/posts
+GET /blog/user/{user_id}/profile
 ```
 
 ---
@@ -187,8 +181,8 @@ Every response is a JSON object with the key **success** to indicate the result 
 ### Admin Routes
 
 - **GET /admin/users**: Retrieve a list of all users.
-- **DELETE /admin/users/:id**: Delete a user by ID.
-- **DELETE /admin/posts/:id**: Delete a post by ID.
+- **DELETE /admin/users/{user_id}**: Delete a user by ID.
+- **DELETE /admin/posts/{post_id}**: Delete a post by ID.
 
 ---
 
@@ -214,8 +208,8 @@ Every response is a JSON object with the key **success** to indicate the result 
     ```
 
 - **GET /blog/posts**: Retrieve a list of all posts.
-- **GET /blog/post/:id**: Retrieve a specific post by ID.
-- **POST /blog/post/:id/comment**: Add a comment to a specific post.
+- **GET /blog/post/{post_id}**: Retrieve a specific post by ID.
+- **POST /blog/post/{post_id}/comment**: Add a comment to a specific post.
   - **Body Parameters**:
     ```json
     {
