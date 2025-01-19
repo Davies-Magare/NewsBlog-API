@@ -77,6 +77,19 @@ npx nodemon server.js
 ### Register and Login
 Users must first register and log in to obtain a JWT token. The token should be included in the `Authorization` header as a Bearer token for accessing protected routes.
 
+### Using the Token
+After successfully logging in, you will receive a JWT token. Use this token to access protected routes by adding it to the `Authorization` header in the following format:
+
+```http
+Authorization: Bearer <your_token_here>
+```
+For example:
+
+```http
+Authorization: Bearer abc123xyz456
+```
+This token authenticates your requests to the server and allows access to restricted resources.
+
 ### Protected Routes
 The following routes are protected by JWT:
 
