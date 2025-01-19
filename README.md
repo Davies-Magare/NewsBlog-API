@@ -10,7 +10,7 @@ and comments.
 * **Follow other Users:** Users can follow other users on the platform
 * **Adminstration Features:** The adminstrator can delete any user and any posts. They can also view a list of all users on the platform
  
-**Installation**
+**Installation** <br>
 **Clone the repository**
 ---
 
