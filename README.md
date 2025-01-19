@@ -12,21 +12,25 @@ and comments.
  
 **Installation**
 **Clone the repository**
-<hr>
+<hr style="border: none; border-top: 1px solid #ccc;" />
+
 ```
 git clone https://github.com/Davies-Magare/NewsBlog-API.git
 ```
-<hr>
+<hr style="border: none; border-top: 1px solid #ccc;" />
+
 **Install dependencies**
 ``` 
 npm install
 ```
-<hr>
+<hr style="border: none; border-top: 1px solid #ccc;" />
+
 ***Run the server**
 ```
 npx nodemon server.js
 ```
-<hr>
+<hr style="border: none; border-top: 1px solid #ccc;" />
+
 
 Documentation
 
