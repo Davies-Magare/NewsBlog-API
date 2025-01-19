@@ -12,21 +12,21 @@ and comments.
  
 **Installation**
 **Clone the repository**
-___
+****
 ```
 git clone https://github.com/Davies-Magare/NewsBlog-API.git
 ```
-___
+****
 **Install dependencies**
 ``` 
 npm install
 ```
-___
+****
 ***Run the server**
 ```
 npx nodemon server.js
 ```
-___
+****
 
 Documentation
 
