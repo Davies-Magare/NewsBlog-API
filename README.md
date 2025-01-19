@@ -1,4 +1,4 @@
-**Overview**
+**Overview** <br>
 NewsBlog API is a backend api for a small blog app where users can register, login, logout, make a post, comment on 
 their post or someone else's post, follow other users, review their profiles or their own profiles, and delete posts
 and comments.
