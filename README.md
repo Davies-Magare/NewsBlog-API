@@ -72,6 +72,53 @@ npx nodemon server.js
 
 ---
 
+## Authentication
+
+### Register and Login
+Users must first register and log in to obtain a JWT token. The token should be included in the `Authorization` header as a Bearer token for accessing protected routes.
+
+### Protected Routes
+The following routes are protected by JWT:
+
+#### Admin Routes
+```http
+GET /admin/users
+DELETE /admin/users/:id
+DELETE /admin/posts/:id
+```
+
+#### Auth Routes
+```http
+POST /auth/register
+POST /auth/login
+GET /auth/logout
+GET /auth/profile
+```
+
+#### Blog Routes
+```http
+POST /blog/post
+PUT /blog/post
+GET /blog/posts
+GET /blog/post/:id
+POST /blog/post/:id/comment
+GET /blog/post/:id/comments
+GET /blog/comment/:id
+POST /blog/users/:id/follow
+GET /blog/me/profile
+GET /blog/me/posts
+GET /blog/user/:id/posts
+GET /blog/user/:id/profile
+```
+
+#### Miscellaneous Routes
+```http
+GET /
+GET /status
+```
+
+---
+
 ## Documentation
 
 The NewsBlog API follows REST conventions. This means you should use:
