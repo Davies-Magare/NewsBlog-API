@@ -153,4 +153,86 @@ Every response is a JSON object with the key **success** to indicate the result 
 - **404 - Not Found**: The requested resource does not exist.
 - **500 - Server Error**: The service is unavailable.
 
+---
 
+## API Endpoints
+
+### Auth Routes
+
+- **POST /auth/register**: Create a new user account. 
+  - **Body Parameters**: 
+    ```json
+    {
+      "username": "string",
+      "email": "string",
+      "password": "string"
+    }
+    ```
+
+- **POST /auth/login**: Authenticate a user and return a JWT token.
+  - **Body Parameters**:
+    ```json
+    {
+      "email": "string",
+      "password": "string"
+    }
+    ```
+
+- **GET /auth/logout**: Log out the current user.
+
+- **GET /auth/profile**: Get the profile of the authenticated user.
+
+---
+
+### Admin Routes
+
+- **GET /admin/users**: Retrieve a list of all users.
+- **DELETE /admin/users/:id**: Delete a user by ID.
+- **DELETE /admin/posts/:id**: Delete a post by ID.
+
+---
+
+### Blog Routes
+
+- **POST /blog/post**: Create a new post.
+  - **Body Parameters**:
+    ```json
+    {
+      "title": "string",
+      "content": "string"
+    }
+    ```
+
+- **PUT /blog/post**: Update an existing post.
+  - **Body Parameters**:
+    ```json
+    {
+      "id": "string",
+      "title": "string",
+      "content": "string"
+    }
+    ```
+
+- **GET /blog/posts**: Retrieve a list of all posts.
+- **GET /blog/post/:id**: Retrieve a specific post by ID.
+- **POST /blog/post/:id/comment**: Add a comment to a specific post.
+  - **Body Parameters**:
+    ```json
+    {
+      "content": "string",
+      "author": "string",
+    }
+    ```
+
+- **GET /blog/post/{post_id}/comments**: Retrieve all comments for a specific post.
+- **GET /blog/comment/{comment_id}**: Retrieve a specific comment by ID.
+- **POST /blog/users/:id/follow**: Follow a user by ID.
+- **GET /blog/me/profile**: Retrieve the profile of the authenticated user.
+- **GET /blog/me/posts**: Retrieve all posts created by the authenticated user.
+- **GET /blog/user/{user_id}/posts**: Retrieve all posts created by a specific user.
+- **GET /blog/user/{user_id}/profile**: Retrieve the profile of a specific user.
+
+### Contributors
+
+---
+Davies Magare {davieskamanda@gmail.com}
