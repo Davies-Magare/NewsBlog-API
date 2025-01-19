@@ -1,35 +1,71 @@
 # NewsBlog API
 
-**Overview**
-The NewsBlog API is a backend API for a small blog application where users can register, log in, log out, create posts, comment on posts (their own or others'), follow users, review profiles (their own or others'), and delete posts and comments.
+## Overview
+NewsBlog API is a backend API for a small blog app where users can:
+- Register, login, and logout.
+- Create posts, comment on their posts or others' posts.
+- Follow other users.
+- Review profiles (their own and others').
+- Delete posts and comments.
+
+Administrators can:
+- Delete any user or post.
+- View a list of all users.
 
 ## Features
-- **User Registration and Authentication:**
-  - Users can register and log in to access protected routes using JWT tokens.
-- **Post and Delete Comments:**
-  - Users can create posts and delete them when needed.
-- **Interact with Posts:**
-  - Users can comment on their own posts or others' posts.
-- **Follow Other Users:**
-  - Users can follow and keep track of other users on the platform.
-- **Administration Features:**
-  - Administrators can delete any user or post and view a list of all users on the platform.
+
+- **User Registration and Authentication**: Users can register and log in with a JWT token to access protected routes.
+- **Post Creation and Deletion**: Users can post news, views, or opinions on the platform.
+- **Commenting System**: Users can comment on their own posts or on the posts of other users.
+- **Follow System**: Users can follow other users on the platform.
+- **Administrative Features**: Administrators can delete users and posts, as well as view all users on the platform.
+
+---
+
+## Project Architecture
+
+```
+├── README.md
+├── controllers
+│   ├── adminController.js
+│   ├── authController.js
+│   └── blogController.js
+├── jwt.txt
+├── middleware
+│   └── authMiddleware.js
+├── models
+│   ├── Comment.js
+│   ├── Follows.js
+│   ├── Post.js
+│   └── User.js
+├── package-lock.json
+├── package.json
+├── routes
+│   ├── adminRoutes.js
+│   ├── authRoutes.js
+│   ├── blogRoutes.js
+│   └── indexRouter.js
+└── server.js
+```
 
 ---
 
 ## Installation
 
-### 1. Clone the Repository
+### Clone the repository
+
 ```bash
 git clone https://github.com/Davies-Magare/NewsBlog-API.git
 ```
 
-### 2. Install Dependencies
+### Install dependencies
+
 ```bash
 npm install
 ```
 
-### 3. Run the Server
+### Run the server
+
 ```bash
 npx nodemon server.js
 ```
@@ -38,31 +74,23 @@ npx nodemon server.js
 
 ## Documentation
 
-The NewsBlog API follows REST conventions. This means you should use the following HTTP methods for appropriate actions:
-- **GET:** Retrieve data
-- **POST/PUT:** Create or modify data
-- **DELETE:** Remove data
+The NewsBlog API follows REST conventions. This means you should use:
+- **GET** requests to retrieve data.
+- **POST** and **PUT** to modify data.
+- **DELETE** to remove data.
 
-All API requests are made over HTTP.
+All API requests are done over HTTP.
 
 ### Response Format
-Every response will be a JSON object containing the following keys:
-- **success:** Indicates the result of the request (true/false).
-- A second key, depending on the data being queried (e.g., `post`, `user`, `comment`).
+Every response is a JSON object with the key **success** to indicate the result of the request, and a second key whose name depends on the data being queried (e.g., "post", "user", "comment").
 
 ### HTTP Response Codes
-| Code | Meaning                      |
-|------|------------------------------|
-| 200  | **OK:** The request succeeded. |
-| 201  | **Created:** A new resource was created. |
-| 400  | **Bad Request:** Invalid request; try again. |
-| 401  | **Unauthorized:** Authentication is required. |
-| 403  | **Forbidden:** You do not have permission to access this resource. |
-| 404  | **Not Found:** The requested resource does not exist. |
-| 500  | **Server Error:** The service is unavailable. |
-
----
-
-For further details about the API endpoints and their usage, please refer to the API documentation or inspect the codebase.
+- **200 - OK**: The request has succeeded.
+- **201 - Created**: A new resource has been created.
+- **400 - Bad Request**: The request is invalid. Try again.
+- **401 - Unauthorized**: The request requires authentication, which the user did not provide.
+- **403 - Forbidden**: You are not allowed to access this resource.
+- **404 - Not Found**: The requested resource does not exist.
+- **500 - Server Error**: The service is unavailable.
 
 
