@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the post model
 const postSchema = new mongoose.Schema(
   {
     title: {
@@ -27,15 +26,14 @@ const postSchema = new mongoose.Schema(
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment', // Reference to the Comment model
+        ref: 'Comment', 
       },
     ],
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true, 
   }
 );
 
-// Model for Post
 module.exports = mongoose.model('Post', postSchema);
 
